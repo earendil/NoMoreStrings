@@ -3,3 +3,9 @@ geckodriver.log
 virtualenv
 __pycache__
 *.pyc
+NoMoreStrings.iml
+misc.xml
+modules.xml
+workspace.xml
+
+

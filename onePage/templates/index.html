@@ -5,6 +5,17 @@
     <title>NoMoreStrings</title>
 </head>
 <body>
-    <h1>First Step First</h1>
+    <h1>String Tests Solution</h1>
+    <hr>
+    <form method="POST">
+        <input name="item_text" id="id_new_item" placeholder="Enter user journey number" />
+        {% csrf_token %}
+    </form>
+    <hr>
+    <table id="id_list_table">
+
+            <tr><td>{{ items }}</td></tr>
+
+    </table>
 </body>
 </html>

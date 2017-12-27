@@ -8,7 +8,7 @@ def home_page(request):
     if request.method == 'POST':
 
         uj = Script(request.POST['item_text'])
-        uj.get_string()
+        uj.get_source()
         # print(uj.input)
         # print(uj.text)
 
@@ -16,7 +16,7 @@ def home_page(request):
         # return redirect('/')
 
         return render(request, 'index.html', {
-            'items': uj.text,
+            'items': uj.get_strings(),
         })
 
     # items = Item.objects.all()

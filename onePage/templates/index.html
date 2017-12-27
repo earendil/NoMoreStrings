@@ -13,9 +13,9 @@
     </form>
     <hr>
     <table id="id_list_table">
-
-            <tr><td>{{ items }}</td></tr>
-
+        {% for string in items%}
+            <tr><td>{{ string }}</td></tr>
+        {% endfor %}
     </table>
 </body>
 </html>

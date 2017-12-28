@@ -7,15 +7,34 @@
 <body>
     <h1>String Tests Solution</h1>
     <hr>
-    <form method="POST">
-        <input name="item_text" id="id_new_item" placeholder="Enter user journey number" />
+    <form method="POST" id="form1">
+        <input name="item_text" id="id_new_uj" placeholder="Enter user journey number" />
         {% csrf_token %}
     </form>
     <hr>
-    <table id="id_list_table">
-        {% for string in items%}
-            <tr><td>{{ string }}</td></tr>
-        {% endfor %}
-    </table>
+
+        <table id="id_list_table">
+            {% for string in items %}
+                <tr>
+                    <td>{{ string }}</td>
+                    <td>
+                        <form method="POST">
+                        <input name="{{ forloop.counter }}" placeholder="Enter new string" />
+                        {% csrf_token %}
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% if text %}
+        <hr>
+        <p>{{ text }}</p>
+        <p style="white-space: pre;">{{ script }}</p>
+    {% endif %}
+    {% if items %}
+        <hr>
+        <button type="submit" formmethod="post" name="test">Test</button>
+        <button type="submit" formmethod="post" name="upload">Upload</button>
+    {% endif %}
 </body>
 </html>

@@ -15,29 +15,54 @@ class Script:
 
         self.uj = str(ujnum)
         self.text = ''
+        self.path = self.get_path()
 
-    @staticmethod
-    def get_path(uj=''):
+    def get_path(self):
 
         response = requests.post('https://tools.scivisumltd.co.uk/couchdb_filter/run_query',
-                                 json={"UJs": [f"{uj}"], "Step code": "", "Injector": "", "Injector_main": "",
+                                 json={"UJs": [f"{self.uj}"], "Step code": "", "Injector": "", "Injector_main": "",
                                        "Injector_backup": "", "Portal": "", "Customer": "", "Browser": "",
                                        "monPeriodOK": "", "monPeriodError": "", "running_yes": True,
                                        "running_no": False, "obsolete_yes": False, "obsolete_no": False,
                                        "True": False, "engine_version_1": False, "engine_version_2": False})
 
-        true_uj_script = re.findall(r"client\.[^.]+.([^.]+)", str(response.content))[0]
+        try:
+            true_uj_number = re.findall(r"client\.[^.]+.([^.]+)", str(response.content))[0]
+        except IndexError:
+            true_uj_number = "000"
 
-        path = subprocess.check_output(f'find ~/cvs -name {true_uj_script}.py', shell=True)[:-1]
+        path = subprocess.check_output(f'find ~/cvs -name {true_uj_number}.py', shell=True)[:-1]
 
         return path
+
+    def update_path(self):
+
+        update = 1
+
+        if self.path != b'':
+            string_path = self.path.decode('ascii')
+            client_folder = string_path.rsplit('/', 1)[0]
+            print(f"Updating path: {client_folder}")
+            update = subprocess.call(f'cd {client_folder}; cvs up -C -d', shell=True)
+        else:
+            print("No path specified")
+
+        print("Successfully updated repository" if not update else "Failed to update repository")
 
     def get_source(self):
 
         try:
-            with open(self.get_path(self.uj), 'r') as f:
+            with open(self.path, 'r') as f:
                 self.text = f.read()
-        except IndexError:
+        except FileNotFoundError:
+            self.text = "File not found."
+
+    def set_source(self):
+        try:
+            with open(self.path, 'w') as f:
+                f.truncate()
+                f.write(self.text)
+        except FileNotFoundError:
             self.text = "File not found."
 
     def get_strings(self):

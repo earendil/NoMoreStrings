@@ -40,7 +40,6 @@ def home_page(request):
 
             return render(request, 'index.html', {
                 'text': old_string + " is now: " + new_string,
-                'items': string_list,
                 'script': uj2.text
             })
 

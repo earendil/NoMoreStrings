@@ -27,11 +27,10 @@
             {% endfor %}
         </table>
     {% if text %}
-        <hr>
         <p>{{ text }}</p>
         <p style="white-space: pre;">{{ script }}</p>
     {% endif %}
-    {% if items %}
+    {% if text %}
         <hr>
         <button type="submit" formmethod="post" name="test">Test</button>
         <button type="submit" formmethod="post" name="upload">Upload</button>

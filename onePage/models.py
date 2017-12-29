@@ -1,4 +1,5 @@
 import subprocess
+from subprocess import CalledProcessError
 import requests
 import re
 from django.db import models
@@ -11,11 +12,22 @@ class Item(models.Model):
 
 class Script:
 
-    def __init__(self, ujnum=''):
+    def __init__(self):
 
-        self.uj = str(ujnum)
+        self.uj = ''
         self.text = ''
+        self.path = ''
+        self.string_list = []
+        self.status = 'Ready'
+        self.flow = True
+
+    def update(self, uj_number):
+
+        self.uj = str(uj_number)
         self.path = self.get_path()
+        self.update_folder()
+        self.text = self.get_source()
+        self.string_list = self.get_strings()
 
     def get_path(self):
 
@@ -27,39 +39,57 @@ class Script:
                                        "True": False, "engine_version_1": False, "engine_version_2": False})
 
         try:
-            true_uj_number = re.findall(r"client\.[^.]+.([^.]+)", str(response.content))[0]
+            self.uj = re.findall(r"client\.[^.]+.([^.]+)", str(response.content))[0]
         except IndexError:
-            true_uj_number = "000"
+            pass
 
-        path = subprocess.check_output(f'find ~/cvs -name {true_uj_number}.py', shell=True)[:-1]
+        path = subprocess.check_output(f'find ~/cvs -name {self.uj}.py', shell=True)[:-1]
 
-        return path
+        if path == b'':
+            self.status = 'User Journey not found.'
+            self.flow = False
 
-    def update_path(self):
+        string_path = path.decode('ascii')
+        client_folder = string_path.rsplit('/', 1)[0]
+
+        return client_folder
+
+    def update_folder(self):
 
         update = 1
 
-        if self.path != b'':
-            string_path = self.path.decode('ascii')
-            client_folder = string_path.rsplit('/', 1)[0]
-            print(f"Updating path: {client_folder}")
-            update = subprocess.call(f'cd {client_folder}; cvs up -C -d', shell=True)
+        if self.path != '':
+
+            print(f"Updating path: {self.path}")
+            update = subprocess.call(f'cd {self.path}; cvs up -C -d', shell=True)
         else:
             print("No path specified")
 
         print("Successfully updated repository" if not update else "Failed to update repository")
 
+    # TO-DO: Implement show diff instead of showing the whole script.
+    def show_diff(self):
+        try:
+            output = subprocess.check_output(f'cd {self.path}; cvs diff {self.uj}.py', shell=True)[:-1]
+        except CalledProcessError as e:
+            output = e.output
+
+        return output
+
     def get_source(self):
 
         try:
-            with open(self.path, 'r') as f:
-                self.text = f.read()
+            with open(self.path + "/" + self.uj + ".py", 'r') as f:
+                return f.read()
         except FileNotFoundError:
-            self.text = "File not found."
+            if self.flow:
+                self.status = "File not found on repository."
+                self.flow = False
+            return ''
 
     def set_source(self):
         try:
-            with open(self.path, 'w') as f:
+            with open(self.path + "/" + self.uj + ".py", 'w') as f:
                 f.truncate()
                 f.write(self.text)
         except FileNotFoundError:
@@ -69,4 +99,18 @@ class Script:
 
         string_tests_list = re.findall(r"\sStringTest\((.*)\)", self.text)
 
-        return string_tests_list if string_tests_list else [self.text]
+        if not string_tests_list:
+            if self.flow:
+                self.status = 'No strings found.'
+                self.flow = False
+        return string_tests_list
+
+    def replace_text(self, old_string, new_string):
+
+        try:
+            self.text = self.text.replace(old_string, f'"{new_string}"')
+            self.set_source()
+        except IndexError:
+            self.status = "Please try again."
+
+

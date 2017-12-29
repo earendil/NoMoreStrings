@@ -14,26 +14,33 @@
     <hr>
 
         <table id="id_list_table">
-            {% for string in items %}
-                <tr>
-                    <td>{{ string }}</td>
-                    <td>
-                        <form method="POST">
-                        <input name="{{ forloop.counter }}" placeholder="Enter new string" />
-                        {% csrf_token %}
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
+            {% if items %}
+                {% for string in items %}
+                    <tr>
+                        <td>{{ string }}</td>
+                        <td>
+                            <form method="POST">
+                            <input name="{{ forloop.counter0 }}" placeholder="Enter new string" />
+                            {% csrf_token %}
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                    <p>{{ status }}</p>
+            {% endif %}
         </table>
     {% if text %}
         <p>{{ text }}</p>
-        <p style="white-space: pre;">{{ script }}</p>
+        <p style="white-space: pre;">{{ changes }}</p>
     {% endif %}
     {% if text %}
         <hr>
-        <button type="submit" formmethod="post" name="test">Test</button>
-        <button type="submit" formmethod="post" name="upload">Upload</button>
+        <form method="POST">
+        <button type="submit" name="test" value="test">Test</button>
+        <button type="submit" name="upload" value="upload">Upload</button>
+        {% csrf_token %}
+        </form>
     {% endif %}
 </body>
 </html>

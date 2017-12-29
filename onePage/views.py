@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from onePage.models import Item, Script
 
+uj = Script()
+
 
 # Create your views here.
 def home_page(request):
@@ -9,22 +11,19 @@ def home_page(request):
 
         if 'item_text' in request.POST:
 
-            uj = Script(request.POST['item_text'])
-            # uj.update_path()
-            uj.get_source()
-            uj_source = uj.get_source()
-            string_list = uj.get_strings()
-            print(uj.uj)
-            print(string_list)
+            uj.update(request.POST['item_text'])
+
+            if uj.status != 'Ready':
+                response = []
+            else:
+                response = uj.string_list
+
             return render(request, 'index.html', {
-                'items': string_list,
+                'items': response,
+                'status': uj.status,
             })
 
         elif [i for i in request.POST.keys() if i.isdigit()]:
-
-            uj2 = Script('7979')
-            uj2.get_source()
-            string_list = uj2.get_strings()
 
             new_string = ""
             old_string = ""
@@ -32,15 +31,27 @@ def home_page(request):
             for k, v in request.POST.items():
                 if k.isdigit():
                     new_string = v
-                    old_string = string_list[int(k) - 1]
+                    old_string = uj.string_list[int(k)]
 
-            uj2.text = uj2.text.replace(old_string, f'"{new_string}"')
-
-            uj2.set_source()
+            uj.replace_text(old_string, new_string)
 
             return render(request, 'index.html', {
-                'text': old_string + " is now: " + new_string,
-                'script': uj2.text
+                'text': old_string.replace("\"", "") + " is now: " + new_string,
+                'changes': uj.show_diff()
+            })
+
+        elif 'test' in request.POST or 'upload' in request.POST:
+
+            return render(request, 'index.html', {
+                'text': 'Yes there is something',
+                'changes': 'You clicked a button.'
+            })
+
+        elif 'upload' in request.POST:
+
+            return render(request, 'index.html', {
+                'text': 'Yes there is something',
+                'changes': 'You clicked a button.'
             })
 
     return render(request, 'index.html')

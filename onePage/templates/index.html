@@ -20,8 +20,10 @@
                         <td>{{ string }}</td>
                         <td>
                             <form method="POST">
-                            <input name="{{ forloop.counter0 }}" placeholder="Enter new string" />
-                            {% csrf_token %}
+                                <!--<input name="{{ forloop.counter0 }}" placeholder="Enter new string" />-->
+                                <input name="new_string" placeholder="Enter new string" />
+                                <input type="hidden" name="old_string" value="{{ forloop.counter0 }}" />
+                                {% csrf_token %}
                             </form>
                         </td>
                     </tr>

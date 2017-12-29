@@ -1,3 +1,4 @@
+import os
 import subprocess
 from subprocess import CalledProcessError
 import requests
@@ -45,32 +46,40 @@ class Script:
 
         path = subprocess.check_output(f'find ~/cvs -name {self.uj}.py', shell=True)[:-1]
 
-        if path == b'':
+        if not path:
             self.status = 'User Journey not found.'
             self.flow = False
 
         string_path = path.decode('ascii')
-        client_folder = string_path.rsplit('/', 1)[0]
+        client_folder = os.path.dirname(string_path)
 
         return client_folder
 
     def update_folder(self):
-
-        update = 1
-
-        if self.path != '':
-
-            print(f"Updating path: {self.path}")
-            update = subprocess.call(f'cd {self.path}; cvs up -C -d', shell=True)
-        else:
+        if not self.path:
             print("No path specified")
+            return
+
+        print(f"Updating path: {self.path}")
+        update = subprocess.call(['cvs', 'up', '-C', '-d'], cwd=self.path)
 
         print("Successfully updated repository" if not update else "Failed to update repository")
 
     # TO-DO: Implement show diff instead of showing the whole script.
     def show_diff(self):
         try:
-            output = subprocess.check_output(f'cd {self.path}; cvs diff {self.uj}.py', shell=True)[:-1]
+            output = subprocess.check_output(['cvs', 'diff', self.uj + '.py'], cwd=self.path)[:-1]
+        except CalledProcessError as e:
+            output = e.output
+
+        return output
+
+    def commit(self, text='', case=''):
+
+        message = f"[#{case}] {text}"
+
+        try:
+            output = subprocess.check_output(['cvs', 'commit', '-m', message, '-f', self.uj + '.py'], cwd=self.path)[:-1]
         except CalledProcessError as e:
             output = e.output
 
@@ -107,10 +116,7 @@ class Script:
 
     def replace_text(self, old_string, new_string):
 
-        try:
-            self.text = self.text.replace(old_string, f'"{new_string}"')
-            self.set_source()
-        except IndexError:
-            self.status = "Please try again."
+        self.text = self.text.replace(old_string, f'"{new_string}"')
+        self.set_source()
 
 

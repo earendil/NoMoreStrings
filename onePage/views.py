@@ -6,7 +6,6 @@ uj = Script()
 
 # Create your views here.
 def home_page(request):
-
     if request.method == 'POST':
 
         if 'item_text' in request.POST:
@@ -23,24 +22,24 @@ def home_page(request):
                 'status': uj.status,
             })
 
-        elif [i for i in request.POST.keys() if i.isdigit()]:
+        elif 'new_string' in request.POST:
+            new_string = request.POST['new_string']
+            result = {}
 
-            new_string = ""
-            old_string = ""
+            try:
+                old_string = uj.string_list[int(request.POST['old_string'])]
+            except IndexError:
+                result['text'] = uj.status = "Please try again."
+            else:
+                uj.replace_text(old_string, new_string)
+                result['text'] = old_string.replace("\"", "") + " is now: " + new_string
 
-            for k, v in request.POST.items():
-                if k.isdigit():
-                    new_string = v
-                    old_string = uj.string_list[int(k)]
+            result['changes'] = uj.show_diff()
+            return render(request, 'index.html', result)
 
-            uj.replace_text(old_string, new_string)
+        elif 'test' in request.POST:
 
-            return render(request, 'index.html', {
-                'text': old_string.replace("\"", "") + " is now: " + new_string,
-                'changes': uj.show_diff()
-            })
-
-        elif 'test' in request.POST or 'upload' in request.POST:
+            uj.commit()
 
             return render(request, 'index.html', {
                 'text': 'Yes there is something',

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from onePage.models import Item, Script
 
-uj = Script()
+uj = None
 
 
 # Create your views here.
@@ -10,16 +10,22 @@ def home_page(request):
 
         if 'item_text' in request.POST:
 
-            uj.update(request.POST['item_text'])
+            global uj
 
-            if uj.status != 'Ready':
+            try:
+                uj = Script(request.POST['item_text'])
+                status = "Ready"
+            except Exception as e:
                 response = []
+                status = str(e)
             else:
                 response = uj.string_list
+                if not response:
+                    status = "No strings found"
 
             return render(request, 'index.html', {
                 'items': response,
-                'status': uj.status,
+                'status': status,
             })
 
         elif 'new_string' in request.POST:

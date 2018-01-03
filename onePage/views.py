@@ -45,20 +45,20 @@ def home_page(request):
             result['changes'] = uj.show_diff()
             return render(request, 'index.html', result)
 
-        elif 'commit' in request.POST:
-            # implement it properly
-            # uj.commit()
-
-            return render(request, 'index.html', {
-                'text': 'Yes there is something',
-                'changes': 'You clicked a button.'
-            })
-        # Implement properly
-        elif 'upload' in request.POST:
-
-            return render(request, 'index.html', {
-                'text': 'Yes there is something',
-                'changes': 'You clicked a button.'
-            })
+        # elif 'commit' in request.POST:
+        #
+        #     changes = uj.commit()
+        #
+        #     return render(request, 'index.html', {
+        #         'changes': changes,
+        #     })
+        #
+        # elif 'upload' in request.POST:
+        #
+        #     changes = uj.upload()
+        #
+        #     return render(request, 'index.html', {
+        #         'changes': changes,
+        #     })
 
     return render(request, 'index.html')

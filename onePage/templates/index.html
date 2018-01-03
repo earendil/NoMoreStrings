@@ -37,9 +37,15 @@
     {% if text %}
         <hr>
         <form method="POST">
-        <button type="submit" name="commit" value="commit">Test</button>
-        <button type="submit" name="upload" value="upload">Upload</button>
-        {% csrf_token %}
+            <!-- Finish sorting input stuff-->
+            <input name="case_number" id="case" placeholder="Enter redmine case number" />
+            <input name="message" id="message" placeholder="Enter commit message" />
+            <button type="submit" name="commit" value="commit">Commit</button>
+            {% csrf_token %}
+        </form>
+        <form method="POST">
+            <button type="submit" name="upload" value="upload">Upload</button>
+            {% csrf_token %}
         </form>
     {% endif %}
 </body>

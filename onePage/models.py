@@ -10,6 +10,7 @@ class Script:
 
     def __init__(self, uj_number):
 
+        self.uj_number = uj_number
         self.uj_path = self.get_path(uj_number)
         self.update_folder()
         self.text = self.get_source()
@@ -69,9 +70,15 @@ class Script:
 
         return output
 
-    # implement proper use on the view
     def upload(self):
-        pass
+
+        # We need the number provided rather than the real file name.
+        try:
+            output = subprocess.check_output(['uploaduj', self.uj_number])[:-1]
+        except CalledProcessError as e:
+            output = e.output
+
+        return output
 
     def get_source(self):
 
@@ -93,8 +100,7 @@ class Script:
 
         return re.findall(r"\bStringTest\((.*)\)", self.text)
 
-    # Have to replace text in a safer way. In order not to replace the occurrence in places outside of string tests.
     def replace_text(self, old_string, new_string):
 
-        self.text = self.text.replace(old_string, repr(new_string))
+        self.text = self.text.replace(f"StringTest({old_string}", f"StringTest({repr(new_string)}")
         self.set_source()

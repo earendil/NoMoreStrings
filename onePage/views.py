@@ -1,11 +1,13 @@
-from django.shortcuts import render, redirect
-from onePage.models import Item, Script
+from django.shortcuts import render
+from onePage.models import Script
 
+# Make sure each connection has it's own object
 uj = None
 
 
 # Create your views here.
 def home_page(request):
+
     if request.method == 'POST':
 
         if 'item_text' in request.POST:
@@ -43,15 +45,15 @@ def home_page(request):
             result['changes'] = uj.show_diff()
             return render(request, 'index.html', result)
 
-        elif 'test' in request.POST:
-
-            uj.commit()
+        elif 'commit' in request.POST:
+            # implement it properly
+            # uj.commit()
 
             return render(request, 'index.html', {
                 'text': 'Yes there is something',
                 'changes': 'You clicked a button.'
             })
-
+        # Implement properly
         elif 'upload' in request.POST:
 
             return render(request, 'index.html', {

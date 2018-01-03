@@ -5,14 +5,13 @@
     <title>NoMoreStrings</title>
 </head>
 <body>
-    <h1>String Tests Solution</h1>
+    <h1>Strings Solution</h1>
     <hr>
-    <form method="POST" id="form1">
+    <form method="POST">
         <input name="item_text" id="id_new_uj" placeholder="Enter user journey number" />
         {% csrf_token %}
     </form>
     <hr>
-
         <table id="id_list_table">
             {% if items %}
                 {% for string in items %}
@@ -20,7 +19,6 @@
                         <td>{{ string }}</td>
                         <td>
                             <form method="POST">
-                                <!--<input name="{{ forloop.counter0 }}" placeholder="Enter new string" />-->
                                 <input name="new_string" placeholder="Enter new string" />
                                 <input type="hidden" name="old_string" value="{{ forloop.counter0 }}" />
                                 {% csrf_token %}
@@ -34,12 +32,12 @@
         </table>
     {% if text %}
         <p>{{ text }}</p>
-        <p style="white-space: pre;">{{ changes }}</p>
+        <pre>{{ changes }}</pre>
     {% endif %}
     {% if text %}
         <hr>
         <form method="POST">
-        <button type="submit" name="test" value="test">Test</button>
+        <button type="submit" name="commit" value="commit">Test</button>
         <button type="submit" name="upload" value="upload">Upload</button>
         {% csrf_token %}
         </form>

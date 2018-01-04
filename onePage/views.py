@@ -45,20 +45,22 @@ def home_page(request):
             result['changes'] = uj.show_diff()
             return render(request, 'index.html', result)
 
-        # elif 'commit' in request.POST:
-        #
-        #     changes = uj.commit()
-        #
-        #     return render(request, 'index.html', {
-        #         'changes': changes,
-        #     })
-        #
-        # elif 'upload' in request.POST:
-        #
-        #     changes = uj.upload()
-        #
-        #     return render(request, 'index.html', {
-        #         'changes': changes,
-        #     })
+        elif 'commit' in request.POST:
+
+            changes = uj.commit(request.POST['case_number'], request.POST['message'])
+
+            return render(request, 'index.html', {
+                'text': 'Commit output:',
+                'changes': changes,
+            })
+
+        elif 'upload' in request.POST:
+
+            changes = uj.upload()
+
+            return render(request, 'index.html', {
+                'text': 'Upload output:',
+                'changes': changes,
+            })
 
     return render(request, 'index.html')

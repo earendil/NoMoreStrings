@@ -56,8 +56,7 @@ class Script:
 
         return output
 
-    # implement proper use on the view
-    def commit(self, text='', case=''):
+    def commit(self, case='', text=''):
 
         uj_dir, uj_file = os.path.split(self.uj_path)
 
@@ -74,7 +73,8 @@ class Script:
 
         # We need the number provided rather than the real file name.
         try:
-            output = subprocess.check_output(['uploaduj', self.uj_number])[:-1]
+            output = subprocess.check_output(f'/sv/venv/svMonitorPortal/bin/TransfileR.py -u 102595 -s {self.uj_number}',
+                                             shell=True, stderr=subprocess.STDOUT)[:-1]
         except CalledProcessError as e:
             output = e.output
 

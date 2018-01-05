@@ -8,11 +8,12 @@ import re
 # Create your models here.
 class Script:
 
-    def __init__(self, uj_number):
+    def __init__(self, uj_number, update=True):
 
         self.uj_number = uj_number
         self.uj_path = self.get_path(uj_number)
-        self.update_folder()
+        if update:
+            self.update_folder()
         self.text = self.get_source()
         self.string_list = self.get_strings()
 

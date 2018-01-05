@@ -8,15 +8,16 @@ uj = None
 # Create your views here.
 def home_page(request):
 
+    global uj
+
     if request.method == 'POST':
 
         if 'item_text' in request.POST:
 
-            global uj
-
             try:
                 uj = Script(request.POST['item_text'])
                 status = "Ready"
+                request.session['uj_number'] = request.POST['item_text']
             except Exception as e:
                 response = []
                 status = str(e)
@@ -31,6 +32,12 @@ def home_page(request):
             })
 
         elif 'new_string' in request.POST:
+
+            session = request.session.get('uj_number', '')
+
+            if session != uj.uj_number:
+                uj = Script(session)
+
             new_string = request.POST['new_string']
             result = {}
 
@@ -43,18 +50,49 @@ def home_page(request):
                 result['text'] = old_string.replace("\"", "") + " is now: " + new_string
 
             result['changes'] = uj.show_diff()
+            result['can_commit'] = 'True'
+
+            request.session['uj_text'] = uj.text
+
             return render(request, 'index.html', result)
 
         elif 'commit' in request.POST:
+
+            session_num = request.session.get('uj_number', '')
+            session_text = request.session.get('uj_text', '')
+
+            if session_num != uj.uj_number:
+                uj = Script(session_num, update=False)
+
+            if session_text != uj.text:
+
+                return render(request, 'index.html', {
+                    'text': 'There has been an issue establishing your session, please try again',
+                    'changes': 'Please report it to your technical team.',
+                })
 
             changes = uj.commit(request.POST['case_number'], request.POST['message'])
 
             return render(request, 'index.html', {
                 'text': 'Commit output:',
                 'changes': changes,
+                'can_upload': 'True',
             })
 
         elif 'upload' in request.POST:
+
+            session_num = request.session.get('uj_number', '')
+            session_text = request.session.get('uj_text', '')
+
+            if session_num != uj.uj_number:
+                uj = Script(session_num)
+
+            if session_text != uj.text:
+
+                return render(request, 'index.html', {
+                    'text': 'There has been an issue establishing your session, please try again',
+                    'changes': 'Please report it to your technical team.',
+                })
 
             changes = uj.upload()
 

@@ -34,7 +34,7 @@
         <p>{{ text }}</p>
         <pre>{{ changes }}</pre>
     {% endif %}
-    {% if text %}
+    {% if can_commit %}
         <hr>
         <form method="POST">
             <input name="case_number" id="case" placeholder="Enter redmine case number" />
@@ -42,6 +42,8 @@
             <button type="submit" name="commit" value="commit">Commit</button>
             {% csrf_token %}
         </form>
+    {% endif %}
+    {% if can_upload %}
         <form method="POST">
             <button type="submit" name="upload" value="upload">Upload</button>
             {% csrf_token %}

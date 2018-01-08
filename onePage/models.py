@@ -24,7 +24,7 @@ class Script:
                                  json={"UJs": [f"{uj_number}"], "Step code": "", "Injector": "", "Injector_main": "",
                                        "Injector_backup": "", "Portal": "", "Customer": "", "Browser": "",
                                        "monPeriodOK": "", "monPeriodError": "", "running_yes": True,
-                                       "running_no": False, "obsolete_yes": False, "obsolete_no": False,
+                                       "running_no": True, "obsolete_yes": False, "obsolete_no": False,
                                        "True": False, "engine_version_1": False, "engine_version_2": False})
 
         try:

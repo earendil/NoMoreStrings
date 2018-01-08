@@ -2,52 +2,88 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
     <title>NoMoreStrings</title>
 </head>
 <body>
-    <h1>Strings Solution</h1>
-    <hr>
-    <form method="POST">
-        <input name="item_text" id="id_new_uj" placeholder="Enter user journey number" />
-        {% csrf_token %}
-    </form>
-    <hr>
-        <table id="id_list_table">
-            {% if items %}
-                {% for string in items %}
-                    <tr>
-                        <td>{{ string }}</td>
-                        <td>
-                            <form method="POST">
-                                <input name="new_string" placeholder="Enter new string" />
-                                <input type="hidden" name="old_string" value="{{ forloop.counter0 }}" />
-                                {% csrf_token %}
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-            {% else %}
-                    <p>{{ status }}</p>
+    <div class="container">
+
+        <div class="row">
+            <div class="jumbotron">
+                <div class="text-center">
+                    <h1>String Test Solution</h1>
+                    <hr>
+                    <div class="col-md-6 col-md-offset-3">
+
+                        <form method="POST">
+                            <input class="form-control input-lg" name="item_text" id="id_new_uj" placeholder="Enter user journey number:" />
+                            {% csrf_token %}
+                        </form>
+
+                    </div>
+                    <hr><hr>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <table id="id_list_table" class="table table-striped table-hover">
+                {% if items %}
+                    {% for string in items %}
+                        <tr>
+                            <td>{{ string }}</td>
+                            <td>
+                                <form method="POST">
+                                    <input  type="text" name="new_string" placeholder="Enter new string:" />
+                                    <input type="hidden" name="old_string" value="{{ forloop.counter0 }}" />
+                                    {% csrf_token %}
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                        <p>{{ status }}</p>
+                {% endif %}
+            </table>
+        </div>
+
+        <div class="row">
+            {% if text %}
+                <h3><em>{{ text }}</em> is now: <b>{{ text1 }}</b>.</h3>
+                <pre>{{ changes }}</pre>
             {% endif %}
-        </table>
-    {% if text %}
-        <p>{{ text }}</p>
-        <pre>{{ changes }}</pre>
-    {% endif %}
-    {% if can_commit %}
-        <hr>
-        <form method="POST">
-            <input name="case_number" id="case" placeholder="Enter redmine case number" />
-            <input name="message" id="message" placeholder="Enter commit message" />
-            <button type="submit" name="commit" value="commit">Commit</button>
-            {% csrf_token %}
-        </form>
-    {% endif %}
-    {% if can_upload %}
-        <form method="POST">
-            <button type="submit" name="upload" value="upload">Upload</button>
-            {% csrf_token %}
-        </form>
-    {% endif %}
+            {% if message %}
+                <h3>{{ message }}</h3>
+                <pre>{{ changes }}</pre>
+            {% endif %}
+        </div>
+
+        <div class="row">
+            {% if can_commit %}
+                <hr>
+                <form class="form-inline" method="POST">
+                    <div class="form-group">
+                        <label for="case">Case Number:</label>
+                        <input type="text" name="case_number" id="case" placeholder="12345" />
+                    </div>
+                    <div class="form-group">
+                        <label for="case">Commit Message:</label>
+                        <input type="text" name="message" id="message" placeholder="Modifying String Test." />
+                    </div>
+                    <button class="btn btn-primary" type="submit" name="commit" value="commit">Commit</button>
+                    {% csrf_token %}
+                </form>
+            {% endif %}
+            {% if can_upload %}
+                <form method="POST">
+                    <button class="btn btn-primary" type="submit" name="upload" value="upload">Upload</button>
+                    {% csrf_token %}
+                </form>
+            {% endif %}
+        </div>
+    </div>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="http://code.jquery.com/jquery.js"></script>
 </body>
 </html>

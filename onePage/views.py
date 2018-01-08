@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from onePage.models import Script
 
-# Make sure each connection has it's own object
 uj = None
 
 
@@ -47,7 +46,8 @@ def home_page(request):
                 result['text'] = uj.status = "Please try again."
             else:
                 uj.replace_text(old_string, new_string)
-                result['text'] = old_string.replace("\"", "") + " is now: " + new_string
+                result['text'] = old_string.replace("\"", "").replace("\'", "")
+                result['text1'] = new_string
 
             result['changes'] = uj.show_diff()
             result['can_commit'] = 'True'
@@ -67,14 +67,14 @@ def home_page(request):
             if session_text != uj.text:
 
                 return render(request, 'index.html', {
-                    'text': 'There has been an issue establishing your session, please try again',
+                    'message': 'There has been an issue establishing your session, please try again',
                     'changes': 'Please report it to your technical team.',
                 })
 
             changes = uj.commit(request.POST['case_number'], request.POST['message'])
 
             return render(request, 'index.html', {
-                'text': 'Commit output:',
+                'message': 'Commit output:',
                 'changes': changes,
                 'can_upload': 'True',
             })
@@ -90,14 +90,14 @@ def home_page(request):
             if session_text != uj.text:
 
                 return render(request, 'index.html', {
-                    'text': 'There has been an issue establishing your session, please try again',
+                    'message': 'There has been an issue establishing your session, please try again',
                     'changes': 'Please report it to your technical team.',
                 })
 
             changes = uj.upload()
 
             return render(request, 'index.html', {
-                'text': 'Upload output:',
+                'message': 'Upload output:',
                 'changes': changes,
             })
 

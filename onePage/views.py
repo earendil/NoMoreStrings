@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from onePage.models import Script
+from .forms import CommitForm
 
 uj = None
 
@@ -51,6 +52,7 @@ def home_page(request):
 
             result['changes'] = uj.show_diff()
             result['can_commit'] = 'True'
+            result['form'] = CommitForm()
 
             request.session['uj_text'] = uj.text
 
@@ -71,7 +73,15 @@ def home_page(request):
                     'changes': 'Please report it to your technical team.',
                 })
 
-            changes = uj.commit(request.POST['case_number'], request.POST['message'])
+            form = CommitForm(request.POST)
+
+            if form.is_valid():
+
+                changes = uj.commit(form.cleaned_data['case'], form.cleaned_data['message'])
+
+            else:
+
+                changes = "Unable to commit due to incorrect data."
 
             return render(request, 'index.html', {
                 'message': 'Commit output:',

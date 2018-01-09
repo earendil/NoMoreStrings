@@ -99,7 +99,13 @@ class Script:
 
     def get_strings(self):
 
-        return re.findall(r"\bStringTest\((.*)\)", self.text)
+        strings_list = re.findall(r"\bStringTest\((.*)\)", self.text)
+
+        for i in strings_list:
+            if "%" in i or "errorMessage" in i:
+                strings_list.remove(i)
+
+        return strings_list
 
     def replace_text(self, old_string, new_string):
 

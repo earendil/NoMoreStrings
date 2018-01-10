@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from onePage.models import Script
-from .forms import CommitForm
+from .forms import CommitForm, StringTest
 
 uj = None
 
@@ -29,6 +29,7 @@ def home_page(request):
             return render(request, 'index.html', {
                 'items': response,
                 'status': status,
+                'form': StringTest()
             })
 
         elif 'new_string' in request.POST:
@@ -38,25 +39,30 @@ def home_page(request):
             if session != uj.uj_number:
                 uj = Script(session)
 
-            new_string = request.POST['new_string']
-            result = {}
+            form = StringTest(request.POST)
 
-            try:
-                old_string = uj.string_list[int(request.POST['old_string'])]
-            except IndexError:
-                result['text'] = uj.status = "Please try again."
-            else:
-                uj.replace_text(old_string, new_string)
-                result['text'] = old_string.replace("\"", "").replace("\'", "")
-                result['text1'] = new_string
+            if form.is_valid():
 
-            result['changes'] = uj.show_diff()
-            result['can_commit'] = 'True'
-            result['form'] = CommitForm()
+                new_string = form.cleaned_data['new_string']
 
-            request.session['uj_text'] = uj.text
+                result = {}
 
-            return render(request, 'index.html', result)
+                try:
+                    old_string = uj.string_list[int(request.POST['old_string'])]
+                except IndexError:
+                    result['text'] = uj.status = "Please try again."
+                else:
+                    uj.replace_text(old_string, new_string)
+                    result['text'] = old_string.replace("\"", "").replace("\'", "")
+                    result['text1'] = new_string
+
+                result['changes'] = uj.show_diff()
+                result['can_commit'] = 'True'
+                result['form'] = CommitForm()
+
+                request.session['uj_text'] = uj.text
+
+                return render(request, 'index.html', result)
 
         elif 'commit' in request.POST:
 

@@ -23,9 +23,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'vqrdsbj%*g-gkmiv(ny=%ruf7=ddc070(0rw*doqgb+g7-0+pw'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', "*"]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', ".scivisum.co.uk"]
+
+ADMINS = [('Lucas', 'lucas.diniz@scivisum.co.uk'), ]
 
 
 # Application definition

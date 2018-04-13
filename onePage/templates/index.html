@@ -12,7 +12,7 @@
         <div class="row">
             <div class="jumbotron">
                 <div class="text-center">
-                    <h1>String Test Solution</h1>
+                    <h1>User Journey Accounts</h1>
                     <hr>
                     <div class="col-md-6 col-md-offset-3">
 
@@ -30,16 +30,22 @@
         <div class="row">
             <table id="id_list_table" class="table table-striped table-hover">
                 {% if items %}
+                     <tr>
+                       <th>Username</th>
+                       <th>Password</th>
+                     </tr>
                     {% for string in items %}
                         <tr>
-                            <td>{{ string }}</td>
-                            <td>
-                                <form method="POST">
-                                    {{ form.as_p }}
-                                    <input type="hidden" name="old_string" value="{{ forloop.counter0 }}" />
-                                    {% csrf_token %}
-                                </form>
-                            </td>
+                            {% for i in string %}
+                                <td>{{ i }}</td>
+                            <!--<td>-->
+                                <!--<form method="POST">-->
+                                    <!--{{ form.as_p }}-->
+                                    <!--<input type="hidden" name="old_string" value="{{ forloop.counter0 }}" />-->
+                                    <!--{% csrf_token %}-->
+                                <!--</form>-->
+                            <!--</td>-->
+                            {% endfor %}
                         </tr>
                     {% endfor %}
                 {% else %}

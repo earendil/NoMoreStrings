@@ -22,7 +22,7 @@ def home_page(request):
                 response = []
                 status = str(e)
             else:
-                response = uj.string_list
+                response = uj.account_list
                 if not response:
                     status = "No strings found"
 

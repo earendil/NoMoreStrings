@@ -16,6 +16,7 @@ class Script:
             self.update_folder()
         self.text = self.get_source()
         self.string_list = self.get_strings()
+        self.account_list = self.get_accounts()
 
     @staticmethod
     def get_path(uj_number):
@@ -106,6 +107,23 @@ class Script:
                 strings_list.remove(i)
 
         return strings_list
+
+    def get_accounts(self):
+
+        exclusions = ["%", "error", "(", "->"]
+
+        accounts_list = re.findall(r"return\s(.+)", self.text)
+        accounts_list = list(set(accounts_list))
+        new_list = list(filter(lambda x: "," in x, accounts_list))
+        accounts_list = new_list
+
+        for i in new_list:
+            for z in exclusions:
+                if z in i:
+                    accounts_list.remove(i)
+                    break
+
+        return [i.split(',') for i in new_list]
 
     def replace_text(self, old_string, new_string):
 
